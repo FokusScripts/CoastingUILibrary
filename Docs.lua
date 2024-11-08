@@ -33,4 +33,4 @@ Create TextBox:
   end)
 
 Deleteing The UI:
-  game:GetService("CoreGui").CoastingUILibrary:Destroy()
+  Library:Destroy()
