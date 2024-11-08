@@ -762,7 +762,7 @@ function Library:CreateTab(name)
             }
         end
 
-	function SectionElements:CreateTextBox(name, placeholderText, initialValue, callback)
+function SectionElements:CreateTextBox(name, placeholderText, initialValue, callback)
     local NameTextBox = Instance.new("Frame")
     local Title = Instance.new("TextLabel")
     local TextBoxContainer = Instance.new("ImageLabel")
@@ -821,6 +821,12 @@ function Library:CreateTab(name)
         end
     end)
 
+    -- Real-time update as the user types
+    TextBoxInput:GetPropertyChangedSignal("Text"):Connect(function()
+        local textValue = TextBoxInput.Text
+        callback(textValue)
+    end)
+
     return {
         SetTextBoxValue = function(value)
             TextBoxInput.Text = value
@@ -828,7 +834,7 @@ function Library:CreateTab(name)
         end
     }
 end
-    
+		
         function SectionElements:CreateColorPicker(name, presetcolor, callback)
             local NameColorPicker = Instance.new("Frame")
             local Title = Instance.new("TextLabel")
