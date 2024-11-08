@@ -810,8 +810,7 @@ function SectionElements:CreateTextBox(name, placeholderText, initialValue, call
     TextBoxInput.Parent = TextBoxContainer
     TextBoxInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TextBoxInput.BackgroundTransparency = 1.000
-    TextBoxInput.Size = UDim2.new(50, 0, 1, 0)
-    --TextBoxInput.Size = UDim2.new(1, 0, 1, 0)
+    TextBoxInput.Size = UDim2.new(105, 0, 1, 0)
     TextBoxInput.ZIndex = 5
     TextBoxInput.Font = Library.Theme.TextFont
     TextBoxInput.PlaceholderText = placeholderText
