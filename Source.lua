@@ -27,18 +27,28 @@ local Library = {
 }
 
 function Library:SendNotification(title, message, duration)
+    local ScreenGui = game:GetService("CoreGui"):FindFirstChild("NotificationGui")
+    if not ScreenGui then
+        ScreenGui = Instance.new("ScreenGui")
+        ScreenGui.Name = "NotificationGui"
+        ScreenGui.Parent = game:GetService("CoreGui")
+        ScreenGui.ResetOnSpawn = false
+    end
+
     local NotificationFrame = Instance.new("Frame")
     local NotificationContainer = Instance.new("ImageLabel")
     local NotificationTitle = Instance.new("TextLabel")
     local NotificationMessage = Instance.new("TextLabel")
 
+    -- Frame setup
     NotificationFrame.Name = "NotificationFrame"
-    NotificationFrame.Parent = ScreenGui or game:GetService("CoreGui")
+    NotificationFrame.Parent = ScreenGui
     NotificationFrame.AnchorPoint = Vector2.new(0.5, 0)
-    NotificationFrame.Position = UDim2.new(0.5, 0, 0.1, 0)
+    NotificationFrame.Position = UDim2.new(0.5, 0, -0.2, 0) -- Start off-screen
     NotificationFrame.Size = UDim2.new(0, 300, 0, 80)
     NotificationFrame.BackgroundTransparency = 1
 
+    -- Container setup
     NotificationContainer.Name = "NotificationContainer"
     NotificationContainer.Parent = NotificationFrame
     NotificationContainer.BackgroundTransparency = 1
@@ -49,6 +59,7 @@ function Library:SendNotification(title, message, duration)
     NotificationContainer.SliceCenter = Rect.new(100, 100, 100, 100)
     NotificationContainer.SliceScale = 0.030
 
+    -- Title setup
     NotificationTitle.Name = "NotificationTitle"
     NotificationTitle.Parent = NotificationContainer
     NotificationTitle.BackgroundTransparency = 1
@@ -60,6 +71,7 @@ function Library:SendNotification(title, message, duration)
     NotificationTitle.TextSize = 16
     NotificationTitle.TextXAlignment = Enum.TextXAlignment.Left
 
+    -- Message setup
     NotificationMessage.Name = "NotificationMessage"
     NotificationMessage.Parent = NotificationContainer
     NotificationMessage.BackgroundTransparency = 1
@@ -73,12 +85,13 @@ function Library:SendNotification(title, message, duration)
     NotificationMessage.TextXAlignment = Enum.TextXAlignment.Left
     NotificationMessage.TextYAlignment = Enum.TextYAlignment.Top
 
-    NotificationFrame.Position = UDim2.new(0.5, 0, -0.1, 0)
+    -- Tween for fade-in animation
     NotificationFrame:TweenPosition(UDim2.new(0.5, 0, 0.1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
 
+    -- Auto-remove after duration
     duration = duration or 3
     task.delay(duration, function()
-        NotificationFrame:TweenPosition(UDim2.new(0.5, 0, -0.1, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.5, true)
+        NotificationFrame:TweenPosition(UDim2.new(0.5, 0, -0.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.5, true)
         task.wait(0.5)
         NotificationFrame:Destroy()
     end)
