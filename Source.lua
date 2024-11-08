@@ -1650,76 +1650,58 @@ end
     return TabElements
 end
 
-function Library:SendNotification(title, message, duration)
-    -- Create a ScreenGui to hold the notification if it doesn't exist
-    local ScreenGui = game:GetService("CoreGui"):FindFirstChild("NotificationGui")
-    if not ScreenGui then
-        ScreenGui = Instance.new("ScreenGui")
-        ScreenGui.Name = "NotificationGui"
-        ScreenGui.Parent = game:GetService("CoreGui")
-        ScreenGui.ResetOnSpawn = false
-    end
-
-    -- Create UI elements
-    local NotificationFrame = Instance.new("Frame")
-    local NotificationContainer = Instance.new("ImageLabel")
+Library.SendNotification = function(title, message, duration)
+    local NotificationContainer = Instance.new("Frame")
     local NotificationTitle = Instance.new("TextLabel")
     local NotificationMessage = Instance.new("TextLabel")
 
-    -- Frame setup
-    NotificationFrame.Name = "NotificationFrame"
-    NotificationFrame.Parent = ScreenGui
-    NotificationFrame.AnchorPoint = Vector2.new(0.5, 0)
-    NotificationFrame.Position = UDim2.new(0.5, 0, -0.2, 0) -- Start off-screen
-    NotificationFrame.Size = UDim2.new(0, 300, 0, 80)
-    NotificationFrame.BackgroundTransparency = 1
-
-    -- Container setup
+    -- Container properties
     NotificationContainer.Name = "NotificationContainer"
-    NotificationContainer.Parent = NotificationFrame
-    NotificationContainer.BackgroundTransparency = 1
-    NotificationContainer.Size = UDim2.new(1, 0, 1, 0)
-    NotificationContainer.Image = "rbxassetid://3570695787"
-    NotificationContainer.ImageColor3 = Color3.fromRGB(65, 65, 65)
-    NotificationContainer.ScaleType = Enum.ScaleType.Slice
-    NotificationContainer.SliceCenter = Rect.new(100, 100, 100, 100)
-    NotificationContainer.SliceScale = 0.030
+    NotificationContainer.Parent = game.CoreGui
+    NotificationContainer.BackgroundColor3 = Library.Theme.BackgroundColor or Color3.fromRGB(65, 65, 65)
+    NotificationContainer.Size = UDim2.new(0, 200, 0, 100)
+    NotificationContainer.Position = UDim2.new(0.5, -100, 0.8, 0)
+    NotificationContainer.AnchorPoint = Vector2.new(0.5, 0.5)
 
-    -- Title setup
+    -- Title properties
     NotificationTitle.Name = "NotificationTitle"
     NotificationTitle.Parent = NotificationContainer
+    NotificationTitle.Font = Library.Theme.TextFont or Enum.Font.GothamBold
+    NotificationTitle.TextColor3 = Library.Theme.TextColor or Color3.fromRGB(255, 255, 255)
+    NotificationTitle.TextSize = 18
+    NotificationTitle.Text = title
+    NotificationTitle.Size = UDim2.new(1, 0, 0.4, 0)
     NotificationTitle.BackgroundTransparency = 1
-    NotificationTitle.Position = UDim2.new(0, 10, 0, 5)
-    NotificationTitle.Size = UDim2.new(1, -20, 0, 20)
-    NotificationTitle.Font = Library.Theme.TextFont
-    NotificationTitle.Text = title or "Notification"
-    NotificationTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NotificationTitle.TextSize = 16
-    NotificationTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Message setup
+    -- Message properties
     NotificationMessage.Name = "NotificationMessage"
     NotificationMessage.Parent = NotificationContainer
-    NotificationMessage.BackgroundTransparency = 1
-    NotificationMessage.Position = UDim2.new(0, 10, 0, 30)
-    NotificationMessage.Size = UDim2.new(1, -20, 0, 40)
-    NotificationMessage.Font = Library.Theme.TextFont
-    NotificationMessage.Text = message or "This is a sample notification message."
-    NotificationMessage.TextColor3 = Color3.fromRGB(200, 200, 200)
+    NotificationMessage.Font = Library.Theme.TextFont or Enum.Font.Gotham
+    NotificationMessage.TextColor3 = Library.Theme.TextColor or Color3.fromRGB(200, 200, 200)
     NotificationMessage.TextSize = 14
     NotificationMessage.TextWrapped = true
-    NotificationMessage.TextXAlignment = Enum.TextXAlignment.Left
-    NotificationMessage.TextYAlignment = Enum.TextYAlignment.Top
+    NotificationMessage.Text = message
+    NotificationMessage.Size = UDim2.new(1, 0, 0.6, 0)
+    NotificationMessage.Position = UDim2.new(0, 0, 0.4, 0)
+    NotificationMessage.BackgroundTransparency = 1
 
-    -- Tween for fade-in animation
-    NotificationFrame:TweenPosition(UDim2.new(0.5, 0, 0.1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
+    -- Show notification with fade effect
+    NotificationContainer.BackgroundTransparency = 1
+    NotificationTitle.TextTransparency = 1
+    NotificationMessage.TextTransparency = 1
+
+    game:GetService("TweenService"):Create(NotificationContainer, TweenInfo.new(0.5), {BackgroundTransparency = 0}):Play()
+    game:GetService("TweenService"):Create(NotificationTitle, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+    game:GetService("TweenService"):Create(NotificationMessage, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 
     -- Auto-remove after duration
-    duration = duration or 3
-    task.delay(duration, function()
-        NotificationFrame:TweenPosition(UDim2.new(0.5, 0, -0.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.5, true)
-        task.wait(0.5)
-        NotificationFrame:Destroy()
+    task.delay(duration or 3, function()
+        game:GetService("TweenService"):Create(NotificationContainer, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+        game:GetService("TweenService"):Create(NotificationTitle, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+        game:GetService("TweenService"):Create(NotificationMessage, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+        task.delay(0.5, function()
+            NotificationContainer:Destroy()
+        end)
     end)
 end
 
