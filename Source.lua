@@ -270,6 +270,9 @@ coroutine.wrap(function()
     end
 end)()
 
+function Library:Destroy()
+   UILibrary:Destroy()
+end
 
 function Library:CreateTab(name)
     local NameTab = Instance.new("Frame")
