@@ -815,8 +815,10 @@ function Library:CreateTab(name)
     TextBoxInput.TextSize = 14.000
 
     TextBoxInput.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
             local textValue = TextBoxInput.Text
             callback(textValue)
+        end
     end)
 
     return {
