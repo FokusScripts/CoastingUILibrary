@@ -1650,60 +1650,6 @@ end
     return TabElements
 end
 
-Library.SendNotification = function(title, message, duration)
-    -- Type checks
-    assert(typeof(title) == "string", "Expected string for title, got " .. typeof(title))
-    assert(typeof(message) == "string", "Expected string for message, got " .. typeof(message))
-    assert(typeof(duration) == "number", "Expected number for duration, got " .. typeof(duration))
-
-    local NotificationContainer = Instance.new("Frame")
-    local NotificationTitle = Instance.new("TextLabel")
-    local NotificationMessage = Instance.new("TextLabel")
-
-    -- Set up properties (same as before)
-    NotificationContainer.Name = "NotificationContainer"
-    NotificationContainer.Parent = game.CoreGui
-    NotificationContainer.BackgroundColor3 = Library.Theme.BackgroundColor or Color3.fromRGB(65, 65, 65)
-    NotificationContainer.Size = UDim2.new(0, 200, 0, 100)
-    NotificationContainer.Position = UDim2.new(0.5, -100, 0.8, 0)
-    NotificationContainer.AnchorPoint = Vector2.new(0.5, 0.5)
-
-    NotificationTitle.Name = "NotificationTitle"
-    NotificationTitle.Parent = NotificationContainer
-    NotificationTitle.Font = Library.Theme.TextFont or Enum.Font.GothamBold
-    NotificationTitle.TextColor3 = Library.Theme.TextColor or Color3.fromRGB(255, 255, 255)
-    NotificationTitle.TextSize = 18
-    NotificationTitle.Text = title
-    NotificationTitle.Size = UDim2.new(1, 0, 0.4, 0)
-    NotificationTitle.BackgroundTransparency = 1
-
-    NotificationMessage.Name = "NotificationMessage"
-    NotificationMessage.Parent = NotificationContainer
-    NotificationMessage.Font = Library.Theme.TextFont or Enum.Font.Gotham
-    NotificationMessage.TextColor3 = Library.Theme.TextColor or Color3.fromRGB(200, 200, 200)
-    NotificationMessage.TextSize = 14
-    NotificationMessage.TextWrapped = true
-    NotificationMessage.Text = message
-    NotificationMessage.Size = UDim2.new(1, 0, 0.6, 0)
-    NotificationMessage.Position = UDim2.new(0, 0, 0.4, 0)
-    NotificationMessage.BackgroundTransparency = 1
-
-    -- Fade in the notification
-    game:GetService("TweenService"):Create(NotificationContainer, TweenInfo.new(0.5), {BackgroundTransparency = 0}):Play()
-    game:GetService("TweenService"):Create(NotificationTitle, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-    game:GetService("TweenService"):Create(NotificationMessage, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-
-    -- Auto-remove after duration
-    task.delay(duration or 3, function()
-        game:GetService("TweenService"):Create(NotificationContainer, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(NotificationTitle, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(NotificationMessage, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-        task.delay(0.5, function()
-            NotificationContainer:Destroy()
-        end)
-    end)
-end
-
 function Library:Destroy()
    UILibrary:Destroy()
 end
