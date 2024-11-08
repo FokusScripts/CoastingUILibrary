@@ -270,10 +270,6 @@ coroutine.wrap(function()
     end
 end)()
 
-function Library:Destroy()
-   game:GetService("CoreGui").CoastingUILibrary:Destroy()
-end
-
 function Library:CreateTab(name)
     local NameTab = Instance.new("Frame")
     local NameTabButton = Instance.new("ImageButton")
@@ -1653,5 +1649,9 @@ end
 
     return TabElements
 end
-	
+
+function Library:Destroy()
+   UILibrary:Destroy()
+end
+
 return Library
