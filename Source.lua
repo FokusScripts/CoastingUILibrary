@@ -121,7 +121,7 @@ local Tabs = Instance.new("Frame")
 local TabButtons = Instance.new("ImageLabel")
 local TabButtonLayout = Instance.new("UIListLayout")
 
-UILibrary.Name = HttpService:GenerateGUID(false)
+UILibrary.Name = "CoastingUILibrary"
 UILibrary.Parent = CoreGui
 UILibrary.DisplayOrder = 1
 UILibrary.ZIndexBehavior = Enum.ZIndexBehavior.Global
@@ -1645,10 +1645,6 @@ end
     end
 
     return TabElements
-end
-
-function Library:Destroy()
-   UILibrary:Destroy()
 end
 	
 return Library
