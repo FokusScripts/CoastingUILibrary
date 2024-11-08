@@ -798,7 +798,7 @@ function SectionElements:CreateTextBox(name, placeholderText, initialValue, call
     TextBoxContainer.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
     TextBoxContainer.BackgroundTransparency = 1.000
     TextBoxContainer.Position = UDim2.new(0.764771521, -12, 0.400000006, -12)
-    --TextBoxContainer.Size = UDim2.new(0, 105, 0, 19)
+    TextBoxContainer.Size = UDim2.new(0, 105, 0, 19)
     --TextBoxContainer.Size = UDim2.new(0, 42, 0, 19)
     TextBoxContainer.ZIndex = 5
     TextBoxContainer.Image = "rbxassetid://3570695787"
