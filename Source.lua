@@ -1650,7 +1650,7 @@ end
     return TabElements
 end
 
-function Library:SendNotification(title, message, duration)
+Library.SendNotification = function(title, message, duration)
     -- Check for valid arguments
     if typeof(title) ~= "string" or typeof(message) ~= "string" or typeof(duration) ~= "number" then
         warn("Invalid arguments passed to SendNotification. Expected (string, string, number).")
