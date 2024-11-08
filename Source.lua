@@ -1,3 +1,7 @@
+if game:GetService("CoreGui"):FindFirstChild("CoastingUILibrary") then
+   game:GetService("CoreGui").CoastingUILibrary:Destroy()
+end
+
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
