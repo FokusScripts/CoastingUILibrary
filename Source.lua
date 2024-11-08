@@ -1650,6 +1650,65 @@ end
     return TabElements
 end
 
+Library:SendNotification(title, message, duration)
+    -- Check for valid arguments
+    if typeof(title) ~= "string" or typeof(message) ~= "string" or typeof(duration) ~= "number" then
+        warn("Invalid arguments passed to SendNotification. Expected (string, string, number).")
+        return
+    end
+
+    -- Create the main notification UI elements
+    local NotificationFrame = Instance.new("Frame")
+    local TitleLabel = Instance.new("TextLabel")
+    local MessageLabel = Instance.new("TextLabel")
+
+    -- Notification frame settings
+    NotificationFrame.Name = "NotificationFrame"
+    NotificationFrame.Parent = SectionContent
+    NotificationFrame.BackgroundColor3 = Library.Theme.BackgroundColor or Color3.fromRGB(65, 65, 65)
+    NotificationFrame.Size = UDim2.new(0, 300, 0, 100)
+    NotificationFrame.Position = UDim2.new(0.5, -150, 0.2, 0)
+    NotificationFrame.AnchorPoint = Vector2.new(0.5, 0)
+    NotificationFrame.BackgroundTransparency = 0.2
+    NotificationFrame.ZIndex = 10
+    NotificationFrame.BorderSizePixel = 0
+
+    -- Title label settings
+    TitleLabel.Name = "TitleLabel"
+    TitleLabel.Parent = NotificationFrame
+    TitleLabel.Font = Library.Theme.TextFont or Enum.Font.GothamBold
+    TitleLabel.Text = title
+    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextSize = 18
+    TitleLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.ZIndex = 11
+
+    -- Message label settings
+    MessageLabel.Name = "MessageLabel"
+    MessageLabel.Parent = NotificationFrame
+    MessageLabel.Font = Library.Theme.TextFont or Enum.Font.Gotham
+    MessageLabel.Text = message
+    MessageLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    MessageLabel.TextSize = 14
+    MessageLabel.TextWrapped = true
+    MessageLabel.Size = UDim2.new(1, -20, 0.6, 0)
+    MessageLabel.Position = UDim2.new(0, 10, 0.3, 0)
+    MessageLabel.BackgroundTransparency = 1
+    MessageLabel.ZIndex = 11
+
+    -- Display the notification and fade it out after duration
+    task.delay(duration or 3, function()
+        for i = 0, 1, 0.1 do
+            NotificationFrame.BackgroundTransparency = i
+            TitleLabel.TextTransparency = i
+            MessageLabel.TextTransparency = i
+            task.wait(0.05)
+        end
+        NotificationFrame:Destroy()
+    end)
+end
+
 function Library:Destroy()
    UILibrary:Destroy()
 end
