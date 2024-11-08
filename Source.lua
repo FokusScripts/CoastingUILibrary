@@ -271,7 +271,7 @@ coroutine.wrap(function()
 end)()
 
 function Library:Destroy()
-   UILibrary:Destroy()
+   game:GetService("CoreGui").CoastingUILibrary:Destroy()
 end
 
 function Library:CreateTab(name)
