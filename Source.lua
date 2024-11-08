@@ -777,7 +777,8 @@ function SectionElements:CreateTextBox(name, placeholderText, initialValue, call
     NameTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     NameTextBox.BackgroundTransparency = 1.000
     NameTextBox.Position = UDim2.new(0, 0, 0.497237563, 0)
-    NameTextBox.Size = UDim2.new(0, 197, 0, 50)
+    NameTextBox.Size = UDim2.new(0, 350, 0, 50)
+    --NameTextBox.Size = UDim2.new(0, 197, 0, 50)
     NameTextBox.ZIndex = 5
 
     Title.Name = "Title"
