@@ -1651,11 +1651,16 @@ end
 end
 
 Library.SendNotification = function(title, message, duration)
+    -- Type checks
+    assert(typeof(title) == "string", "Expected string for title, got " .. typeof(title))
+    assert(typeof(message) == "string", "Expected string for message, got " .. typeof(message))
+    assert(typeof(duration) == "number", "Expected number for duration, got " .. typeof(duration))
+
     local NotificationContainer = Instance.new("Frame")
     local NotificationTitle = Instance.new("TextLabel")
     local NotificationMessage = Instance.new("TextLabel")
 
-    -- Container properties
+    -- Set up properties (same as before)
     NotificationContainer.Name = "NotificationContainer"
     NotificationContainer.Parent = game.CoreGui
     NotificationContainer.BackgroundColor3 = Library.Theme.BackgroundColor or Color3.fromRGB(65, 65, 65)
@@ -1663,7 +1668,6 @@ Library.SendNotification = function(title, message, duration)
     NotificationContainer.Position = UDim2.new(0.5, -100, 0.8, 0)
     NotificationContainer.AnchorPoint = Vector2.new(0.5, 0.5)
 
-    -- Title properties
     NotificationTitle.Name = "NotificationTitle"
     NotificationTitle.Parent = NotificationContainer
     NotificationTitle.Font = Library.Theme.TextFont or Enum.Font.GothamBold
@@ -1673,7 +1677,6 @@ Library.SendNotification = function(title, message, duration)
     NotificationTitle.Size = UDim2.new(1, 0, 0.4, 0)
     NotificationTitle.BackgroundTransparency = 1
 
-    -- Message properties
     NotificationMessage.Name = "NotificationMessage"
     NotificationMessage.Parent = NotificationContainer
     NotificationMessage.Font = Library.Theme.TextFont or Enum.Font.Gotham
@@ -1685,11 +1688,7 @@ Library.SendNotification = function(title, message, duration)
     NotificationMessage.Position = UDim2.new(0, 0, 0.4, 0)
     NotificationMessage.BackgroundTransparency = 1
 
-    -- Show notification with fade effect
-    NotificationContainer.BackgroundTransparency = 1
-    NotificationTitle.TextTransparency = 1
-    NotificationMessage.TextTransparency = 1
-
+    -- Fade in the notification
     game:GetService("TweenService"):Create(NotificationContainer, TweenInfo.new(0.5), {BackgroundTransparency = 0}):Play()
     game:GetService("TweenService"):Create(NotificationTitle, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
     game:GetService("TweenService"):Create(NotificationMessage, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
