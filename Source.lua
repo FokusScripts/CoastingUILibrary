@@ -1647,8 +1647,8 @@ end
     return TabElements
 end
 
-function Library:Destroy() 
-   Library:Destroy()
+function Main:Destroy() 
+   Main:Destroy()
 end
 
 return Library
