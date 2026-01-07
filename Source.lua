@@ -1643,6 +1643,115 @@ end
 
         SectionContent.CanvasSize = UDim2.new(0, 0, 0, SectionContentLayout.AbsoluteContentSize.Y + 15)
 
+
+		
+function SectionElements:SendNotification(...)
+    local args = {...}
+
+    local Duration, Icon, Title, Subtitle
+
+    for _, v in ipairs(args) do
+        if typeof(v) == "number" then
+            Duration = v
+        elseif typeof(v) == "string" then
+            if v:match("^rbxassetid://") then
+                Icon = v
+            elseif not Title then
+                Title = v
+            elseif not Subtitle then
+                Subtitle = v
+            end
+        end
+    end
+
+    Duration = Duration or 3
+    Title = Title or ""
+    Subtitle = Subtitle or ""
+
+    -- Notification stack table
+    self.Notifications = self.Notifications or {}
+
+    local notifyGui = Instance.new("ScreenGui")
+    notifyGui.Name = "NotificationGui"
+    notifyGui.Parent = CoreGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 80)
+    frame.Position = UDim2.new(1, -20, 0, 20) -- start top-right
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    frame.BackgroundTransparency = 1
+    frame.AnchorPoint = Vector2.new(1, 0)
+    frame.Parent = notifyGui
+
+    -- Icon
+    if Icon then
+        local iconImg = Instance.new("ImageLabel")
+        iconImg.Image = Icon
+        iconImg.Size = UDim2.new(0, 48, 0, 48)
+        iconImg.Position = UDim2.new(0, 8, 0, 16)
+        iconImg.BackgroundTransparency = 1
+        iconImg.Parent = frame
+    end
+
+    -- Title
+    local titleLbl = Instance.new("TextLabel")
+    titleLbl.Text = Title
+    titleLbl.Size = UDim2.new(1, Icon and -64 or -16, 0, 24)
+    titleLbl.Position = UDim2.new(0, Icon and 64 or 16, 0, 16)
+    titleLbl.TextColor3 = Color3.new(1, 1, 1)
+    titleLbl.BackgroundTransparency = 1
+    titleLbl.Font = self.Theme.TextFont or Enum.Font.SourceSansBold
+    titleLbl.TextScaled = true
+    titleLbl.Parent = frame
+
+    -- Subtitle
+    local subLbl = Instance.new("TextLabel")
+    subLbl.Text = Subtitle
+    subLbl.Size = UDim2.new(1, Icon and -64 or -16, 0, 20)
+    subLbl.Position = UDim2.new(0, Icon and 64 or 16, 0, 40)
+    subLbl.TextColor3 = Color3.fromRGB(200, 200, 200)
+    subLbl.BackgroundTransparency = 1
+    subLbl.Font = self.Theme.TextFont or Enum.Font.SourceSans
+    subLbl.TextSize = 14
+    subLbl.TextScaled = false
+    subLbl.Parent = frame
+
+    table.insert(self.Notifications, frame)
+
+    local TweenService = game:GetService("TweenService")
+
+    -- Update positions of all notifications (stack)
+    local function updatePositions()
+        for i, notif in ipairs(self.Notifications) do
+            TweenService:Create(notif, TweenInfo.new(0.3), {
+                Position = UDim2.new(1, -20, 0, 20 + (i - 1) * 90)
+            }):Play()
+        end
+    end
+
+    updatePositions()
+
+    -- Fade in
+    TweenService:Create(frame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
+
+    -- Auto-remove
+    task.delay(Duration, function()
+        TweenService:Create(frame, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+        task.wait(0.3)
+        frame:Destroy()
+        for i, notif in ipairs(self.Notifications) do
+            if notif == frame then
+                table.remove(self.Notifications, i)
+                break
+            end
+        end
+        updatePositions()
+    end)
+end
+
+		
+
+		
         return SectionElements
     end
 
