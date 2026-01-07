@@ -1650,6 +1650,7 @@ function SectionElements:SendNotification(...)
 
     local Duration, Icon, Title, Subtitle
 
+    -- Detect arguments by type
     for _, v in ipairs(args) do
         if typeof(v) == "number" then
             Duration = v
@@ -1668,27 +1669,39 @@ function SectionElements:SendNotification(...)
     Title = Title or ""
     Subtitle = Subtitle or ""
 
-    -- Notification stack table
     self.Notifications = self.Notifications or {}
 
     local notifyGui = Instance.new("ScreenGui")
     notifyGui.Name = "NotificationGui"
+    notifyGui.ResetOnSpawn = false
     notifyGui.Parent = CoreGui
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 300, 0, 80)
-    frame.Position = UDim2.new(1, -20, 0, 20) -- start top-right
-    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    frame.Size = UDim2.new(0, 320, 0, 80)
+    frame.Position = UDim2.new(1, 20, 1, 100) -- start off-screen bottom-right
+    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     frame.BackgroundTransparency = 1
-    frame.AnchorPoint = Vector2.new(1, 0)
+    frame.AnchorPoint = Vector2.new(1, 1) -- anchor bottom-right
     frame.Parent = notifyGui
 
-    -- Icon
+    -- Rounded corners
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = frame
+
+    -- Shadow effect
+    local shadow = Instance.new("UIStroke")
+    shadow.Color = Color3.fromRGB(20, 20, 20)
+    shadow.Transparency = 0.5
+    shadow.Thickness = 2
+    shadow.Parent = frame
+
+    -- Optional Icon
     if Icon then
         local iconImg = Instance.new("ImageLabel")
         iconImg.Image = Icon
         iconImg.Size = UDim2.new(0, 48, 0, 48)
-        iconImg.Position = UDim2.new(0, 8, 0, 16)
+        iconImg.Position = UDim2.new(0, 10, 0, 16)
         iconImg.BackgroundTransparency = 1
         iconImg.Parent = frame
     end
@@ -1696,47 +1709,50 @@ function SectionElements:SendNotification(...)
     -- Title
     local titleLbl = Instance.new("TextLabel")
     titleLbl.Text = Title
-    titleLbl.Size = UDim2.new(1, Icon and -64 or -16, 0, 24)
-    titleLbl.Position = UDim2.new(0, Icon and 64 or 16, 0, 16)
+    titleLbl.Size = UDim2.new(1, Icon and -68 or -20, 0, 30)
+    titleLbl.Position = UDim2.new(0, Icon and 64 or 10, 0, 10)
     titleLbl.TextColor3 = Color3.new(1, 1, 1)
     titleLbl.BackgroundTransparency = 1
     titleLbl.Font = self.Theme.TextFont or Enum.Font.SourceSansBold
-    titleLbl.TextScaled = true
+    titleLbl.TextScaled = false
+    titleLbl.TextSize = 18
+    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
     titleLbl.Parent = frame
 
     -- Subtitle
     local subLbl = Instance.new("TextLabel")
     subLbl.Text = Subtitle
-    subLbl.Size = UDim2.new(1, Icon and -64 or -16, 0, 20)
-    subLbl.Position = UDim2.new(0, Icon and 64 or 16, 0, 40)
+    subLbl.Size = UDim2.new(1, Icon and -68 or -20, 0, 24)
+    subLbl.Position = UDim2.new(0, Icon and 64 or 10, 0, 40)
     subLbl.TextColor3 = Color3.fromRGB(200, 200, 200)
     subLbl.BackgroundTransparency = 1
     subLbl.Font = self.Theme.TextFont or Enum.Font.SourceSans
-    subLbl.TextSize = 14
     subLbl.TextScaled = false
+    subLbl.TextSize = 14
+    subLbl.TextXAlignment = Enum.TextXAlignment.Left
     subLbl.Parent = frame
 
     table.insert(self.Notifications, frame)
 
     local TweenService = game:GetService("TweenService")
 
-    -- Update positions of all notifications (stack)
+    -- Function to update stacked notifications
     local function updatePositions()
         for i, notif in ipairs(self.Notifications) do
-            TweenService:Create(notif, TweenInfo.new(0.3), {
-                Position = UDim2.new(1, -20, 0, 20 + (i - 1) * 90)
-            }):Play()
+            local goal = UDim2.new(1, -20, 1, -20 - (i - 1) * 90)
+            TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = goal}):Play()
         end
     end
 
     updatePositions()
 
-    -- Fade in
+    -- Fade in + slide in
     TweenService:Create(frame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
 
-    -- Auto-remove
+    -- Auto-remove after Duration
     task.delay(Duration, function()
-        TweenService:Create(frame, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+        local goal = UDim2.new(1, 20, 1, 100) -- slide back off-screen
+        TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Position = goal}):Play()
         task.wait(0.3)
         frame:Destroy()
         for i, notif in ipairs(self.Notifications) do
@@ -1748,6 +1764,7 @@ function SectionElements:SendNotification(...)
         updatePositions()
     end)
 end
+
 
 		
 
