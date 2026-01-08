@@ -1646,6 +1646,94 @@ end
         return SectionElements
     end
 
+	local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+-- ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Notifications"
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+-- Container (bottom-left)
+local Holder = Instance.new("Frame")
+Holder.Parent = ScreenGui
+Holder.BackgroundTransparency = 1
+Holder.Size = UDim2.new(0, 300, 1, 0)
+Holder.Position = UDim2.new(0, 20, 0, 0)
+
+-- UIListLayout for stacking
+local Layout = Instance.new("UIListLayout")
+Layout.Parent = Holder
+Layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+Layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+Layout.Padding = UDim.new(0, 10)
+
+-- Function
+function SectionElements:SendNotification(Title, Subtitle, Duration)
+    Duration = Duration or 3
+
+    -- Notification frame
+    local Notif = Instance.new("Frame")
+    Notif.Parent = Holder
+    Notif.Size = UDim2.new(0, 280, 0, 70)
+    Notif.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Notif.BorderSizePixel = 0
+    Notif.Position = UDim2.new(0, -300, 1, 0) -- start off-screen
+    Notif.AutomaticSize = Enum.AutomaticSize.None
+
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 8)
+    Corner.Parent = Notif
+
+    -- Title
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Parent = Notif
+    TitleLabel.Size = UDim2.new(1, -20, 0, 24)
+    TitleLabel.Position = UDim2.new(0, 10, 0, 8)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = Title
+    TitleLabel.TextColor3 = Color3.new(1, 1, 1)
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextSize = 14
+    TitleLabel.TextXAlignment = Left
+
+    -- Subtitle
+    local SubLabel = Instance.new("TextLabel")
+    SubLabel.Parent = Notif
+    SubLabel.Size = UDim2.new(1, -20, 0, 20)
+    SubLabel.Position = UDim2.new(0, 10, 0, 36)
+    SubLabel.BackgroundTransparency = 1
+    SubLabel.Text = Subtitle
+    SubLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+    SubLabel.Font = Enum.Font.Gotham
+    SubLabel.TextSize = 12
+    SubLabel.TextXAlignment = Left
+    SubLabel.TextWrapped = true
+
+    -- Tween in
+    local InTween = TweenService:Create(
+        Notif,
+        TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+        {Position = UDim2.new(0, 0, 0, 0)}
+    )
+    InTween:Play()
+
+    task.delay(Duration, function()
+        -- Tween out
+        local OutTween = TweenService:Create(
+            Notif,
+            TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
+            {Position = UDim2.new(0, -300, 0, 0)}
+        )
+        OutTween:Play()
+        OutTween.Completed:Wait()
+        Notif:Destroy()
+    end)
+end
+
+
     return TabElements
 end
 
