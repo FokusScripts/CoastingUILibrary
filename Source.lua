@@ -1646,92 +1646,86 @@ end
         return SectionElements
     end
 
+
 	local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 
--- ScreenGui
+-- Notification UI (created once)
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "Notifications"
 ScreenGui.Parent = Player:WaitForChild("PlayerGui")
 ScreenGui.ResetOnSpawn = false
 
--- Container (bottom-left)
 local Holder = Instance.new("Frame")
 Holder.Parent = ScreenGui
 Holder.BackgroundTransparency = 1
-Holder.Size = UDim2.new(0, 300, 1, 0)
+Holder.Size = UDim2.new(0, 300, 1, -20)
 Holder.Position = UDim2.new(0, 20, 0, 0)
 
--- UIListLayout for stacking
 local Layout = Instance.new("UIListLayout")
 Layout.Parent = Holder
-Layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 Layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
 Layout.Padding = UDim.new(0, 10)
 
--- Function
-function SectionElements:SendNotification(Title, Subtitle, Duration)
+--------------------------------------------------
+
+local Section = {}
+Section.__index = Section
+
+function Section:SendNotification(Title, Subtitle, Duration)
     Duration = Duration or 3
 
-    -- Notification frame
     local Notif = Instance.new("Frame")
     Notif.Parent = Holder
     Notif.Size = UDim2.new(0, 280, 0, 70)
     Notif.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     Notif.BorderSizePixel = 0
-    Notif.Position = UDim2.new(0, -300, 1, 0) -- start off-screen
-    Notif.AutomaticSize = Enum.AutomaticSize.None
+    Notif.Position = UDim2.new(0, -300, 0, 0)
 
-    local Corner = Instance.new("UICorner")
+    local Corner = Instance.new("UICorner", Notif)
     Corner.CornerRadius = UDim.new(0, 8)
-    Corner.Parent = Notif
 
-    -- Title
-    local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Parent = Notif
+    local TitleLabel = Instance.new("TextLabel", Notif)
+    TitleLabel.Text = Title
     TitleLabel.Size = UDim2.new(1, -20, 0, 24)
     TitleLabel.Position = UDim2.new(0, 10, 0, 8)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = Title
-    TitleLabel.TextColor3 = Color3.new(1, 1, 1)
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextSize = 14
     TitleLabel.TextXAlignment = Left
+    TitleLabel.TextColor3 = Color3.new(1,1,1)
 
-    -- Subtitle
-    local SubLabel = Instance.new("TextLabel")
-    SubLabel.Parent = Notif
+    local SubLabel = Instance.new("TextLabel", Notif)
+    SubLabel.Text = Subtitle
     SubLabel.Size = UDim2.new(1, -20, 0, 20)
     SubLabel.Position = UDim2.new(0, 10, 0, 36)
     SubLabel.BackgroundTransparency = 1
-    SubLabel.Text = Subtitle
-    SubLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
     SubLabel.Font = Enum.Font.Gotham
     SubLabel.TextSize = 12
-    SubLabel.TextXAlignment = Left
     SubLabel.TextWrapped = true
+    SubLabel.TextXAlignment = Left
+    SubLabel.TextColor3 = Color3.fromRGB(170,170,170)
 
     -- Tween in
-    local InTween = TweenService:Create(
+    TweenService:Create(
         Notif,
-        TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+        TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
         {Position = UDim2.new(0, 0, 0, 0)}
-    )
-    InTween:Play()
+    ):Play()
 
     task.delay(Duration, function()
-        -- Tween out
-        local OutTween = TweenService:Create(
+        local tweenOut = TweenService:Create(
             Notif,
-            TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
+            TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
             {Position = UDim2.new(0, -300, 0, 0)}
         )
-        OutTween:Play()
-        OutTween.Completed:Wait()
+        tweenOut:Play()
+        tweenOut.Completed:Wait()
         Notif:Destroy()
     end)
 end
+
 
 
     return TabElements
